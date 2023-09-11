@@ -41,7 +41,33 @@ def main():
     today = date.today()
         # show date in different format
     today = today.strftime("%d/%m/%Y")
-    html += f"<p>{today}</p>"
+    html += f"<p class=\"time\">{today}</p>"
+    #html += f"<p class=\"time\">10/09/2023</p>"
+    html += """<script>
+        // Get the element with class "time"
+        const timeElement = document.querySelector('.time');
+
+        // Get the current date (without time)
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Set the time to midnight
+
+        // Extract the date part from the element's content
+        const dateString = timeElement.textContent.split(' ')[0]; // Extract the date part in "dd/MM/yyyy" format
+
+        // Parse the date string to create a Date object
+        const dateParts = dateString.split('/');
+        const date = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+
+        // Define a warning message element
+        const warningMessage = document.createElement('h2');
+        warningMessage.style.color = "red";
+
+        // Compare the date and display a warning if outdated
+        if (currentDate > date) {
+            warningMessage.textContent = 'The menu is outdated!';
+            timeElement.parentElement.appendChild(warningMessage);
+        }
+    </script>"""
     for restaurant in res_list:
         print(restaurant)
         html += f"<h2>{restaurant}</h2>"
