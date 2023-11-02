@@ -43,7 +43,36 @@ def main():
     today = today.strftime("%d/%m/%Y")
     html += f"<p class=\"time\">{today}</p>"
     #html += f"<p class=\"time\">10/09/2023</p>"
-    html += """<script>
+    html += """<!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+            .time {
+                color: green;
+                font-size: 1.2em;
+            }
+            h2 {
+                color: navy;
+                text-align: center;
+            }
+            table {
+                width: 80%;  /* Adjust to desired width */
+                margin: auto;  /* Center the table */
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #4CAF50;
+                color: white;
+            }
+        </style>
+        <script>
         // Get the element with class "time"
         const timeElement = document.querySelector('.time');
 
@@ -67,7 +96,9 @@ def main():
             warningMessage.textContent = 'The menu is outdated!';
             timeElement.parentElement.appendChild(warningMessage);
         }
-    </script>"""
+    </script>
+    </head>
+    <body>"""
     for restaurant in res_list:
         print(restaurant)
         html += f"<h2>{restaurant}</h2>"
@@ -79,7 +110,7 @@ def main():
         html += "</table>"
         print('\n')
         html += "<br />"
-    html += "</body>"
+    html += "</body></html>"
 
     path = "\\\\orion\\USYS_DIRECTORY\\USYS_Home\\VojtaP\\menu.html"
     #path = "C:\\Users\\vojtech.pavlas.USYS\\Desktop\\menu.html"
