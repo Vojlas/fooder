@@ -59,7 +59,6 @@ def main():
                 text-align: center;
             }
             table {
-                width: 80%;  /* Adjust to desired width */
                 margin: auto;  /* Center the table */
             }
             th, td {
@@ -70,6 +69,30 @@ def main():
             th {
                 background-color: #4CAF50;
                 color: white;
+            }
+
+            @media screen and (min-width: 1200px) {
+                table {
+                    width: 100%;
+                }
+            }
+
+            @media screen and (min-width: 1300px) {
+                table {
+                    width: 80%;
+                }
+            }
+
+            @media screen and (min-width: 1500px) {
+                table {
+                    width: 70%;
+                }
+            }
+
+            @media screen and (min-width: 1800px) {
+                table {
+                    width: 60%;
+                }
             }
         </style>
         <script>
