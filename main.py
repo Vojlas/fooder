@@ -1,6 +1,6 @@
 import Pekarka as pk
 import FoodGarden as food
-# import Bistro
+import Bistro
 import subprocess
 import sys, os
 from datetime import date
@@ -24,11 +24,11 @@ def main():
     for b in y:
         Items.append(b)
 
-    #Bistro:
-   # kavky = Bistro.Bistro()
-   # kavkyFood = kavky.loadMenuItems()
-   # for k in kavkyFood:
-   #     Items.append(k)
+   #Bistro:
+    kavky = Bistro.Bistro()
+    kavkyFood = kavky.loadMenuItems()
+    for k in kavkyFood:
+       Items.append(k)
 
 
 

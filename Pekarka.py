@@ -22,6 +22,9 @@ class Pekarka():
             if cislo_elem is None or popis_elem is None or cena_elem is None:
                 continue
             
+            if cislo_elem.next_element == "DĚTI":
+                continue
+            
             item = FoodItem.FoodItem("Pekařka", popis_elem.text.strip(), cena_elem.text.strip())
             menu_items.append(item)
         return menu_items

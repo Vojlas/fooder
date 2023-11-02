@@ -24,27 +24,49 @@ class Bistro():
         menu_section = soup.find('table', {'class': 'table_menu'})
 
         day = 1 + q*2
-        dmenuAll = menu_section.contents[day]
-        dmenuRaw = dmenuAll.contents[1]
+        dmenuAll = menu_section.contents
+        
+        menuDaySelection =[]
+        ranges = [(1, 8), (9, 16), (17, 24), (25, 32), (33, 40)]
+        for i in range(ranges[q][0], ranges[q][1]):
+            menuDaySelection.append(dmenuAll[i])
+        
+        #dmenuRaw = dmenuAll.contents[1]
 
-        prFoo = dmenuAll.contents[3].find('span', {'class':'table_v2'}).text.strip() #cena jidlo
-        prMenu = dmenuAll.contents[5].find('span', {'class':'table_v2'}).text.strip() #cena menu
+        #prFoo = dmenuAll.contents[3].find('span', {'class':'table_v2'}).text.strip() #cena jidlo
+        #prMenu = dmenuAll.contents[5].find('span', {'class':'table_v2'}).text.strip() #cena menu
 
-
-        soup = dmenuRaw.contents[3].text.strip() #.contents[0]
+        soup = menuDaySelection[0].text.split('\n')[3].strip()
         matches = re.findall(r'(\d+Kč)$', soup)
         value = 'neznámá'
         if matches:
             value = matches[-1]
             soup = re.sub(value, '',soup)
 
+
+        # soup = dmenuRaw.contents[3].text.strip() #.contents[0]
+        # matches = re.findall(r'(\d+Kč)$', soup)
+        # value = 'neznámá'
+        # if matches:
+        #     value = matches[-1]
+        #     soup = re.sub(value, '',soup)
+
         menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', soup.strip(), value))
 
-        rawFood = dmenuRaw.contents[5]
-        for i in range(0, len(rawFood.contents)):
-            if(i % 2 == 0):
-                foo =  rawFood.contents[i].strip()
-                menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', foo, prFoo + ' v menu: '+prMenu))
+
+        ## FOODS
+        item = menuDaySelection[2].text.split('\n')
+        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', item[0], item[1]))
+        
+        for index in [4, 6]:
+            item = menuDaySelection[index].text.split('\n')
+            menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', item[1], item[2]))
+
+        # rawFood = dmenuRaw.contents[5]
+        # for i in range(0, len(rawFood.contents)):
+        #     if(i % 2 == 0):
+        #         foo =  rawFood.contents[i].strip()
+        #         menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', foo, prFoo + ' v menu: '+prMenu))
 
         return menu_items
                 
