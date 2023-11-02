@@ -51,16 +51,22 @@ class Bistro():
         #     value = matches[-1]
         #     soup = re.sub(value, '',soup)
 
-        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', soup.strip(), value))
+        soup.strip()
+        soup = re.sub(r'A ((,| )?\d(,| )?)*$', '', soup).strip()
+        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', soup, value))
 
 
         ## FOODS
         item = menuDaySelection[2].text.split('\n')
-        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', item[0].split('/')[1].strip(), item[1]))
+        food = item[0].split('/')[1].strip()
+        food = re.sub(r'A ((,| )?\d(,| )?)*$', '', food).strip()
+        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', food, item[1]))
         
         for index in [4, 6]:
             item = menuDaySelection[index].text.split('\n')
-            menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', item[1].split('/')[1].strip(), item[2]))
+            food = item[1].split('/')[1].strip()
+            food = re.sub(r'A ((,| )?\d(,| )?)*$', '', food).strip()
+            menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', food, item[2]))
 
         # rawFood = dmenuRaw.contents[5]
         # for i in range(0, len(rawFood.contents)):

@@ -25,7 +25,11 @@ class Pekarka():
             if cislo_elem.next_element == "DĚTI":
                 continue
             
-            item = FoodItem.FoodItem("Pekařka", popis_elem.text.strip(), cena_elem.text.strip())
+            # Remove all numbers and ',' from the end of the string
+            popis_text = popis_elem.text.strip()
+            popis_text = ''.join([i for i in popis_text if not i.isdigit() and i != ','])
+            
+            item = FoodItem.FoodItem("Pekařka", popis_text, cena_elem.text.strip())
             menu_items.append(item)
         return menu_items
 
