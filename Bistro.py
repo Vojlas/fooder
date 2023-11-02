@@ -56,11 +56,11 @@ class Bistro():
 
         ## FOODS
         item = menuDaySelection[2].text.split('\n')
-        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', item[0], item[1]))
+        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', item[0].split('/')[1].strip(), item[1]))
         
         for index in [4, 6]:
             item = menuDaySelection[index].text.split('\n')
-            menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', item[1], item[2]))
+            menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', item[1].split('/')[1].strip(), item[2]))
 
         # rawFood = dmenuRaw.contents[5]
         # for i in range(0, len(rawFood.contents)):
