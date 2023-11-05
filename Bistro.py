@@ -28,13 +28,19 @@ class Bistro():
         
         menuDaySelection =[]
         ranges = [(1, 8), (9, 16), (17, 24), (25, 32), (33, 40)]
-        for i in range(ranges[q][0], ranges[q][1]):
-            menuDaySelection.append(dmenuAll[i])
+        if q < len(ranges):
+            for i in range(ranges[q][0], ranges[q][1]):
+                menuDaySelection.append(dmenuAll[i])
+        else:
+            print(f"Index {q} is out of range for the 'ranges' list.")
         
         #dmenuRaw = dmenuAll.contents[1]
 
         #prFoo = dmenuAll.contents[3].find('span', {'class':'table_v2'}).text.strip() #cena jidlo
         #prMenu = dmenuAll.contents[5].find('span', {'class':'table_v2'}).text.strip() #cena menu
+        if len(menuDaySelection) == 0:
+            print("Error getting menu for Bistro Kavčí hory")
+            return
 
         soup = menuDaySelection[0].text.split('\n')[3].strip()
         matches = re.findall(r'(\d+Kč)$', soup)

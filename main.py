@@ -13,22 +13,31 @@ def main():
     Items = []
 
     #Pekarka:
-    pkk = pk.Pekarka()
-    x = pkk.loadMenuItems()
-    for a in x:
-        Items.append(a)
+    try:
+        pkk = pk.Pekarka()
+        x = pkk.loadMenuItems()
+        for a in x:
+            Items.append(a)
+    except Exception as e:
+        print(f"An error occurred while loading Bistro menu items: {e}")
 
     #FoodGarden:
-    foo = food.FoodGarden()
-    y = foo.loadMenuItems();
-    for b in y:
-        Items.append(b)
-
+    try:
+        foo = food.FoodGarden()
+        y = foo.loadMenuItems();
+        for b in y:
+            Items.append(b)
+    except Exception as e:
+        print(f"An error occurred while loading Bistro menu items: {e}")
+        
    #Bistro:
-    kavky = Bistro.Bistro()
-    kavkyFood = kavky.loadMenuItems()
-    for k in kavkyFood:
-       Items.append(k)
+    try:
+        kavky = Bistro.Bistro()
+        kavkyFood = kavky.loadMenuItems()
+        for k in kavkyFood:
+           Items.append(k)
+    except Exception as e:
+        print(f"An error occurred while loading Bistro menu items: {e}")
 
 
 
