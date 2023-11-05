@@ -136,16 +136,22 @@ def main():
     html += "</body></html>"
 
     path = "\\\\orion\\USYS_DIRECTORY\\USYS_Home\\VojtaP\\menu.html"
-    #path = "C:\\Users\\vojtech.pavlas.USYS\\Desktop\\menu.html"
+    localPath = "C:\\Users\\vojtech.pavlas.USYS\\Desktop\\Fooder\\data"
 
+    # Make local copy
+    copyFile(html, localPath)
 
+    # Publish
+    copyFile(html, path)
+
+    print("Done!")
+
+def copyFile(html, path):
     if os.path.exists(path):
         os.remove(path)
     f = open(path, "a")
     f.write(html)
     f.close()
-
-    print("Done!")
 
 if (__name__ == "__main__"):
     main()
