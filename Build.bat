@@ -1,3 +1,4 @@
 @ECHO OFF
 call ".\env\Scripts\activate.bat"
-pyinstaller ./main.spec
+pyinstaller -F --onefile ./main.py
+pause

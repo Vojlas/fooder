@@ -1,5 +1,5 @@
 @ECHO OFF
 
 call ".\env\Scripts\activate.bat"
-python main.py
+python .\main.py
 pause

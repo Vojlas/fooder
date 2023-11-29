@@ -4,6 +4,7 @@ import Bistro
 import subprocess
 import sys, os
 from datetime import date
+import argparse
 
 def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
@@ -165,5 +166,18 @@ def copyFile(html, path):
     f.close()
 
 if (__name__ == "__main__"):
+    # Create the parser
+    parser = argparse.ArgumentParser(description="Specify working directory")
+
+    # Add the arguments
+    parser.add_argument('--dir', type=str, help='The working directory')
+
+    # Parse the arguments
+    args = parser.parse_args()
+
+    # Use the provided working directory
+    if args.dir:
+        os.chdir(args.dir)
+
     main()
     
