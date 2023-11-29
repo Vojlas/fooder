@@ -1,2 +1,3 @@
-call "C:\Users\vojtech.pavlas.USYS\Desktop\Fooder\env\Scripts\activate.bat"
+@ECHO OFF
+call ".\env\Scripts\activate.bat"
 pyinstaller ./main.spec
