@@ -145,7 +145,9 @@ def main():
     html += "</body></html>"
 
     path = "\\\\orion\\USYS_DIRECTORY\\USYS_Home\\VojtaP\\menu.html"
-    localPath = "C:\\Users\\vojtech.pavlas.USYS\\Desktop\\Fooder\\data\\menu.html"
+    localPath = ".\\data\\menu.html"
+    if not os.path.exists(".\\data"):
+        os.mkdir(".\\data")
 
     # Make local copy
     copyFile(html, localPath)
