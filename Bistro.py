@@ -5,9 +5,8 @@ from bs4 import BeautifulSoup
 import re
 
 class Bistro():
-    def __init__(self, loggingEnabled):
+    def __init__(self):
         print("Bistro")
-        self.loggingEnabled = loggingEnabled
 
     def loadMenuItems(self):
         #url = "https://www.nakavcichhorach.cz/info/tydenni/"
