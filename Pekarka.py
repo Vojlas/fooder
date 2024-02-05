@@ -34,11 +34,11 @@ class Pekarka():
         return menu_items
 
         # Print the menu items
-        for item in menu_items:
-            print(f"Cislo: {item['cislo']}")
-            print(f"Popis: {item['popis']}")
-            print(f"Cena: {item['cena']}")
-            print()
+        #for item in menu_items:
+        #    print(f"Cislo: {item['cislo']}")
+        #    print(f"Popis: {item['popis']}")
+        #    print(f"Cena: {item['cena']}")
+        #    print()
 
     def loadPage(self, url):
         fp = urllib.request.urlopen(url)

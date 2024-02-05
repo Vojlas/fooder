@@ -5,11 +5,16 @@ import subprocess
 import sys, os
 from datetime import date
 import argparse
+from flask import Flask
+from bs4 import BeautifulSoup
+
+app = Flask(__name__)
+LoggingEnabled = False
 
 def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-def main():
+def main(returnAsString):
     #install("beautifulsoup4")
     Items = []
 
@@ -133,30 +138,43 @@ def main():
     </head>
     <body>"""
     for restaurant in res_list:
-        print(restaurant)
+        if LoggingEnabled:
+            print(restaurant)
         html += f"<h2>{restaurant}</h2>"
         fo = filter(lambda x: x.place==restaurant, Items)
         html += "<table><th>Název</th><th>Cena</th>"
         for f in fo:
             html += f"<tr><td>{f.name}</td><td>{f.price}</td></tr>"
-            print(f.name)
+            if LoggingEnabled:
+                print(f.name)
         html += "</table>"
-        print('\n')
+        if LoggingEnabled:
+            print('\n')
         html += "<br />"
     html += "</body></html>"
 
-    path = "\\\\orion\\USYS_DIRECTORY\\USYS_Home\\VojtaP\\menu.html"
     localPath = ".\\data\\menu.html"
-    if not os.path.exists(".\\data"):
-        os.mkdir(".\\data")
+    path = "\\\\orion\\USYS_DIRECTORY\\USYS_Home\\VojtaP\\menu.html"
 
-    # Make local copy
-    copyFile(html, localPath)
+    if returnAsString:
+        if not os.path.exists(".\\data"):
+            os.mkdir(".\\data")
+        copyFile(html, localPath)
 
-    # Publish
-    copyFile(html, path)
+        return html
+    else:
+        localPath = ".\\data\\menu.html"
+        if not os.path.exists(".\\data"):
+            os.mkdir(".\\data")
 
-    print("Done!")
+        # Make local copy
+        copyFile(html, localPath)
+
+        # Publish
+        copyFile(html, path)
+
+    if LoggingEnabled:
+        print("Done!")
 
 def copyFile(html, path):
     if os.path.exists(path):
@@ -164,6 +182,44 @@ def copyFile(html, path):
     f = open(path, "a")
     f.write(html)
     f.close()
+
+def getCache():
+    path = ".\\data\\menu.html"
+
+    if os.path.exists(path):
+        f = open(path, "r")
+        html = f.read()
+        f.close()
+
+        soup = BeautifulSoup(html, "html.parser")
+        time = soup.find("p", {"class": "time"})
+
+        if time:
+            time = time.text
+            today = date.today()
+            today = today.strftime("%d/%m/%Y")
+
+            if time == today:
+                return html
+                app.logger.info("Cache hit!")
+            else:
+                return None
+                app.logger.info("Cache old!")
+        return html
+    else:
+        return None
+        app.logger.info("Cache miss!")
+
+@app.route('/')
+def index():
+    print("Index")
+    cache = getCache()
+    if cache:
+        print("    Cache hit!")
+        return cache
+    else:
+        print("    Cache miss!")
+        return main(True)
 
 if (__name__ == "__main__"):
     # Create the parser
@@ -178,6 +234,7 @@ if (__name__ == "__main__"):
     # Use the provided working directory
     if args.dir:
         os.chdir(args.dir)
-
-    main()
+    
+    print("Starting the server...")
+    app.run(host='0.0.0.0', port=8000)
     
