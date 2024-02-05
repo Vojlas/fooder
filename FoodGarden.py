@@ -22,17 +22,17 @@ class FoodGarden():
         if menu_section:
             for i in range(0,5):
                 var = menu_section.contents[0].contents[0].contents[0].contents[0].contents[i]
-                match i:
-                    case 0: #Name
-                        day_name_element = var.find('h3')
+                if i ==0:
+                    #Name
+            	    day_name_element = var.find('h3')
                     
-                    case 2: #Food
-                        menu = var.find_all('p')
+             	elif i==2: #Food
+                	menu = var.find_all('p')
                         for item in menu:
                             m = FoodItem.FoodItem('Food Garden', item.contents[0], '')
                             menu_items.append(m)
                     
-                    case 4: #Superior
+            	elif i==4: #Superior
                         sup = var.find_all('div', {'class':'listitem-cell'})[1]
                         m = FoodItem.FoodItem('Food Garden', 'SUPERIOR: '+sup.contents[0], '')
                         menu_items.append(m)
