@@ -89,6 +89,10 @@ def main(returnAsString):
             color: white;
         }
         @media screen and (max-width: 600px) {
+            .price{
+                color: grey;
+            }
+            
             table, thead, tbody, th, td, tr {
                 display: block;
             }
@@ -117,7 +121,7 @@ def main(returnAsString):
         fo = filter(lambda x: x.place==restaurant, Items)
         html += "<table><thead><tr><th>Název</th><th>Cena</th></tr></thead><tbody>"
         for f in fo:
-            html += f'<tr><td data-label="Název">{f.name}</td><td data-label="Cena">{f.price}</td></tr>'
+            html += f'<tr><td data-label="Název">{f.name}</td><td class="price" data-label="Cena">{f.price}</td></tr>'
             if LoggingEnabled:
                 print(f.name)
         html += "</tbody></table>"
@@ -199,6 +203,9 @@ def ereaseCache():
     path = ".\\data\\menu.html"
     if os.path.exists(path):
         os.remove(path)
+        return "Cache erased!"
+    else:
+        return "Cache not found!"
 
 if (__name__ == "__main__"):
     # Create the parser
