@@ -52,102 +52,75 @@ def main(returnAsString):
         if item.place not in res_list: 
             res_list.append(item.place) 
     print()
-    html = "<body>"
+    html = """<h
+    <body>"""
     today = date.today()
         # show date in different format
     today = today.strftime("%d/%m/%Y")
     html += f"<p class=\"time\">{today}</p>"
     #html += f"<p class=\"time\">10/09/2023</p>"
-    html += """<!DOCTYPE html>
-    <html>
-    <head>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-            }
-            .time {
-                color: green;
-                font-size: 1.2em;
-            }
-            h2 {
-                color: navy;
-                text-align: center;
-            }
-            table {
-                margin: auto;  /* Center the table */
+    html = """<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .time {
+            color: green;
+            font-size: 1.2em;
+        }
+        h2 {
+            color: navy;
+            text-align: center;
+        }
+        table {
+            width: 100%; /* Make table width 100% of its container */
+            margin: auto;  /* Center the table */
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        @media screen and (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
             }
             th, td {
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
+                text-align: right;
             }
-            th {
-                background-color: #4CAF50;
-                color: white;
+            td:before {
+                content: attr(data-label);
+                float: left;
+                font-weight: bold;
             }
-
-            @media screen and (min-width: 1200px) {
-                table {
-                    width: 100%;
-                }
-            }
-
-            @media screen and (min-width: 1300px) {
-                table {
-                    width: 80%;
-                }
-            }
-
-            @media screen and (min-width: 1500px) {
-                table {
-                    width: 70%;
-                }
-            }
-
-            @media screen and (min-width: 1800px) {
-                table {
-                    width: 60%;
-                }
-            }
-        </style>
-        <script>
-        // Get the element with class "time"
-        const timeElement = document.querySelector('.time');
-
-        // Get the current date (without time)
-        const currentDate = new Date();
-        currentDate.setHours(0, 0, 0, 0); // Set the time to midnight
-
-        // Extract the date part from the element's content
-        const dateString = timeElement.textContent.split(' ')[0]; // Extract the date part in "dd/MM/yyyy" format
-
-        // Parse the date string to create a Date object
-        const dateParts = dateString.split('/');
-        const date = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
-
-        // Define a warning message element
-        const warningMessage = document.createElement('h2');
-        warningMessage.style.color = "red";
-
-        // Compare the date and display a warning if outdated
-        if (currentDate > date) {
-            warningMessage.textContent = 'The menu is outdated!';
-            timeElement.parentElement.appendChild(warningMessage);
         }
-    </script>
-    </head>
-    <body>"""
+    </style>
+</head>
+<body>"""
+
+    today = date.today()
+    # show date in different format
+    today = today.strftime("%d/%m/%Y")
+    html += f'<p class="time">{today}</p>'
+
     for restaurant in res_list:
         if LoggingEnabled:
             print(restaurant)
         html += f"<h2>{restaurant}</h2>"
         fo = filter(lambda x: x.place==restaurant, Items)
-        html += "<table><th>Název</th><th>Cena</th>"
+        html += "<table><thead><tr><th>Název</th><th>Cena</th></tr></thead><tbody>"
         for f in fo:
-            html += f"<tr><td>{f.name}</td><td>{f.price}</td></tr>"
+            html += f'<tr><td data-label="Název">{f.name}</td><td data-label="Cena">{f.price}</td></tr>'
             if LoggingEnabled:
                 print(f.name)
-        html += "</table>"
+        html += "</tbody></table>"
         if LoggingEnabled:
             print('\n')
         html += "<br />"
@@ -220,6 +193,12 @@ def index():
     else:
         print("    Cache miss!")
         return main(True)
+    
+@app.route('/erase')
+def ereaseCache():
+    path = ".\\data\\menu.html"
+    if os.path.exists(path):
+        os.remove(path)
 
 if (__name__ == "__main__"):
     # Create the parser
