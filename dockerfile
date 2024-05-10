@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.9.17-bookwork
+FROM python:3.9.17-bookworm
 
 ENV PYTHONUNBUFFERED TRUE
 ENV APP_HOME /back_end¨
