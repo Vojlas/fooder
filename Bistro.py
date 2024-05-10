@@ -9,7 +9,6 @@ class Bistro():
         print("Bistro")
 
     def loadMenuItems(self):
-        #url = "https://www.nakavcichhorach.cz/info/tydenni/"
         url = "https://www.nakavcichhorach.cz/info/menu/#tydenni"
         soup = BeautifulSoup(self.loadPage(url), "html.parser")
         menu_items = []
