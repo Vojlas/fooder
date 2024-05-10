@@ -7,8 +7,15 @@ from datetime import date
 import argparse
 from flask import Flask
 from bs4 import BeautifulSoup
+from flask_cors import CORS
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
+
+app.config['DEBUG'] = os.environ.get("FLASK_DEBUG")
 LoggingEnabled = False
 
 def install(package):
@@ -222,5 +229,6 @@ if (__name__ == "__main__"):
         os.chdir(args.dir)
     
     print("Starting the server...")
-    app.run(host='0.0.0.0', port=8000)
+    app.run()
+
     

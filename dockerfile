@@ -1,17 +1,12 @@
-# syntax=docker/dockerfile:1
+# Dockerfile
+FROM python:3.9.17-bookwork
 
-FROM python:3.8-slim-buster
+ENV PYTHONUNBUFFERED TRUE
+ENV APP_HOME /back_end¨
+WORKDIR $APP_HOME
+COPY . ./
 
-WORKDIR /python-docker
+RUN pip install --no-cache-dir --upgrade 
+RUN pip install --no-cache-dir -r requirements.txt 
 
-ENV FLASK_APP=main.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
-
-COPY . .
-
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-
-EXPOSE 8000
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app]
