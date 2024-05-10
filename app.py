@@ -18,11 +18,7 @@ CORS(app)
 app.config['DEBUG'] = os.environ.get("FLASK_DEBUG")
 LoggingEnabled = False
 
-def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
 def main(returnAsString):
-    #install("beautifulsoup4")
     Items = []
 
     #Pekarka:
@@ -51,8 +47,6 @@ def main(returnAsString):
            Items.append(k)
     except Exception as e:
         print(f"An error occurred while loading Bistro menu items: {e}")
-
-
 
     res_list = []
     for item in Items: 
@@ -138,7 +132,6 @@ def main(returnAsString):
     html += "</body></html>"
 
     localPath = ".\\data\\menu.html"
-    path = "\\\\orion\\USYS_DIRECTORY\\USYS_Home\\VojtaP\\menu.html"
 
     if returnAsString:
         if not os.path.exists(".\\data"):
@@ -153,9 +146,6 @@ def main(returnAsString):
 
         # Make local copy
         copyFile(html, localPath)
-
-        # Publish
-        copyFile(html, path)
 
     if LoggingEnabled:
         print("Done!")
