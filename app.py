@@ -3,12 +3,17 @@ import FoodGarden as food
 import Bistro
 import subprocess
 import sys, os
-from datetime import date
+from datetime import date, datetime
 import argparse
-from flask import Flask
+from flask import Flask, request, send_from_directory, render_template
 from bs4 import BeautifulSoup
 from flask_cors import CORS
 from dotenv import load_dotenv
+from BackgroundTask import BackgroundTasks
+from utils import fetch_menu_items, cache_data, load_cached_data
+from FoodItem import FoodItem, FoodItemCollection
+import json
+
 
 load_dotenv()
 
@@ -18,191 +23,94 @@ CORS(app)
 app.config['DEBUG'] = os.environ.get("FLASK_DEBUG")
 LoggingEnabled = False
 
-def main(returnAsString):
-    Items = []
+def main(order_param, returnAsString=False):
+    cached_items = load_cached_data()
+    if not cached_items:
+        # Fetch data if not cached
+        Items = fetch_menu_items()
+        cache_data(Items)
+    else:
+        Items = cached_items
 
-    #Pekarka:
-    try:
-        pkk = pk.Pekarka()
-        x = pkk.loadMenuItems()
-        for a in x:
-            Items.append(a)
-    except Exception as e:
-        print(f"An error occurred while loading Bistro menu items: {e}")
+    # Map letters to restaurant names
+    order_mapping = {'F': 'Food Garden', 'P': 'Pekařka', 'B': 'Bistro Kavčí hory', 'S': 'Sokolovna'}
+    ordered_restaurants = [order_mapping[letter] for letter in order_param if letter in order_mapping]
 
-    #FoodGarden:
-    try:
-        foo = food.FoodGarden()
-        y = foo.loadMenuItems();
-        for b in y:
-            Items.append(b)
-    except Exception as e:
-        print(f"An error occurred while loading Bistro menu items: {e}")
-        
-   #Bistro:
-    try:
-        kavky = Bistro.Bistro()
-        kavkyFood = kavky.loadMenuItems()
-        for k in kavkyFood:
-           Items.append(k)
-    except Exception as e:
-        print(f"An error occurred while loading Bistro menu items: {e}")
+    menu_data = {}
+    for item in Items:
+        # Determine if the item is a FoodItem instance or a dictionary and access accordingly
+        place = item.place if isinstance(item, FoodItem) else item['place']
 
-    res_list = []
-    for item in Items: 
-        if item.place not in res_list: 
-            res_list.append(item.place) 
-    print()
-    html = """<h
-    <body>"""
-    today = date.today()
-        # show date in different format
-    today = today.strftime("%d/%m/%Y")
-    html += f"<p class=\"time\">{today}</p>"
-    #html += f"<p class=\"time\">10/09/2023</p>"
-    html = """<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .time {
-            color: green;
-            font-size: 1.2em;
-        }
-        h2 {
-            color: navy;
-            text-align: center;
-        }
-        table {
-            width: 100%; /* Make table width 100% of its container */
-            margin: auto;  /* Center the table */
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        @media screen and (max-width: 600px) {
-            .price{
-                color: grey;
-            }
-            
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-            th, td {
-                text-align: right;
-            }
-            td:before {
-                content: attr(data-label);
-                float: left;
-                font-weight: bold;
-            }
-        }
-    </style>
-</head>
-<body>"""
+        # Ensure there is a list to append to for the given place
+        if place not in menu_data:
+            menu_data[place] = []
 
-    today = date.today()
-    # show date in different format
-    today = today.strftime("%d/%m/%Y")
-    html += f'<p class="time">{today}</p>'
+        # Append the item to the list for the restaurant/place
+        menu_data[place].append(item.to_dict())
 
-    for restaurant in res_list:
-        if LoggingEnabled:
-            print(restaurant)
-        html += f"<h2>{restaurant}</h2>"
-        fo = filter(lambda x: x.place==restaurant, Items)
-        html += "<table><thead><tr><th>Název</th><th>Cena</th></tr></thead><tbody>"
-        for f in fo:
-            html += f'<tr><td data-label="Název">{f.name}</td><td class="price" data-label="Cena">{f.price}</td></tr>'
-            if LoggingEnabled:
-                print(f.name)
-        html += "</tbody></table>"
-        if LoggingEnabled:
-            print('\n')
-        html += "<br />"
-    html += "</body></html>"
+    coll = FoodItemCollection(Items)
+    sorted_menu_data = coll.transformCollection()
 
-    localPath = ".\\data\\menu.html"
+    today = date.today().strftime("%d/%m/%Y")
 
     if returnAsString:
-        if not os.path.exists(".\\data"):
-            os.mkdir(".\\data")
-        copyFile(html, localPath)
-
-        return html
+        html_content = render_template('menu.html', menu_data=sorted_menu_data, today=today)
+        # Code to save html_content to a file
+        return html_content
     else:
-        localPath = ".\\data\\menu.html"
-        if not os.path.exists(".\\data"):
-            os.mkdir(".\\data")
+        return render_template('menu.html', menu_data=sorted_menu_data, today=today)
 
-        # Make local copy
-        copyFile(html, localPath)
+def load_cached_data():
+    cache_path = "./data/menu_items_cache.json"
+    if os.path.exists(cache_path):
+        try:
+            with open(cache_path, "r") as f:
+                cache_content = json.load(f)
+                cache_date = cache_content['date']
+                today_date = datetime.now().strftime("%Y-%m-%d")
+                if cache_date == today_date:
+                    print('Cache loaded')
+                    # Convert the list of dictionaries to a list of FoodItem instances
+                    items = [FoodItem.from_dict(item) for item in cache_content['items']]
+                    return items
+                else:
+                    return None
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Error loading cache: {e}")
+            return None
+    return None
 
-    if LoggingEnabled:
-        print("Done!")
-
-def copyFile(html, path):
-    if os.path.exists(path):
-        os.remove(path)
-    f = open(path, "a")
-    f.write(html)
-    f.close()
-
-def getCache():
-    path = ".\\data\\menu.html"
-
-    if os.path.exists(path):
-        f = open(path, "r")
-        html = f.read()
-        f.close()
-
-        soup = BeautifulSoup(html, "html.parser")
-        time = soup.find("p", {"class": "time"})
-
-        if time:
-            time = time.text
-            today = date.today()
-            today = today.strftime("%d/%m/%Y")
-
-            if time == today:
-                return html
-                app.logger.info("Cache hit!")
-            else:
-                return None
-                app.logger.info("Cache old!")
-        return html
-    else:
-        return None
-        app.logger.info("Cache miss!")
 
 @app.route('/')
 def index():
     print("Index")
-    cache = getCache()
-    if cache:
-        print("    Cache hit!")
-        return cache
-    else:
-        print("    Cache miss!")
-        return main(True)
+    order_param = request.args.get('order', default='FPBS')
+    return main(order_param)
     
 @app.route('/erase')
-def ereaseCache():
-    path = ".\\data\\menu.html"
+def eraseCache():
+    path = "./data/menu_items_cache.json"
     if os.path.exists(path):
         os.remove(path)
         return "Cache erased!"
     else:
         return "Cache not found!"
+    
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path), 'favicon.ico',mimetype='image/vnd.microsoft.icon')
+
+@app.route('/update_cache', methods=['POST'])
+def update_cache():
+    key = request.form.get('key')
+    if key == '12rnxHJo1PRkmKArogiyhDKEnmBuOT486':
+        if 'file' not in request.files:
+            return 'No file part', 400
+        file = request.files['file']
+        file.save('./data/menu_items_cache.json')
+        return 'Cache updated', 200
+    else:
+        return 'Unauthorized', 403
 
 if (__name__ == "__main__"):
     # Create the parser
@@ -217,6 +125,10 @@ if (__name__ == "__main__"):
     # Use the provided working directory
     if args.dir:
         os.chdir(args.dir)
+
+    if os.getenv('START_BACKGROUND_TASK') == 'true':
+        t = BackgroundTasks()
+        t.run()
     
     print("Starting the server...")
     app.run()

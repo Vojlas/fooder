@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .time { color: green; font-size: 1.2em; }
+        h2 { color: navy; text-align: center; }
+        table { width: 100%; margin: auto; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        .wrapper { width: 80%; margin: auto; }
+        @media screen and (max-width: 1200px) { .wrapper { width: 90%; } }
+        @media screen and (max-width: 1100px) { .wrapper { width: 100%; } }
+        @media screen and (max-width: 600px) {
+            .price{ color: grey; }
+            table, thead, tbody, th, td, tr { display: block; }
+            th, td { text-align: right; }
+            td:before { content: attr(data-label); float: left; font-weight: bold; }
+        }
+    </style>
+</head>
+<body>
+    <p class="time">{{ today }}</p>
+    <div class="wrapper">
+        {% for restaurant in menu_data %}
+            <h2>{{ restaurant.name }}</h2>
+            <table>
+                <!--<tr><th>Název</th><th>Cena</th></tr>-->
+                {% for foodCategory in restaurant.categories %}
+                <th colspan="2">{{ foodCategory.name }}</th>
+                    <tbody>
+                        {% for item in foodCategory.items %}
+                            <tr>
+                                <td data-label="Název">{{ item.name }}</td>
+                                <td class="price" data-label="Cena">{{ item.price }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% endfor %}
+                </table>
+            <br />
+        {% endfor %}
+    </div>
+</body>
+</html>

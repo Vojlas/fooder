@@ -29,11 +29,11 @@ class FoodGarden():
                 elif i==2: #Food
                     menu = var.find_all('p')
                     for item in menu:
-                        m = FoodItem.FoodItem('Food Garden', item.contents[0], '')
+                        m = FoodItem.FoodItem('Food Garden', item.contents[0], '', "menu")
                         menu_items.append(m)
                 elif i==4: #Superior
                     sup = var.find_all('div', {'class':'listitem-cell'})[1]
-                    m = FoodItem.FoodItem('Food Garden', 'SUPERIOR: '+sup.contents[0], '')
+                    m = FoodItem.FoodItem('Food Garden', sup.contents[0], '', "Superior")
                     menu_items.append(m)
                     return menu_items             
 

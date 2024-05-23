@@ -9,6 +9,7 @@ class Bistro():
         print("Bistro")
 
     def loadMenuItems(self):
+        #url = "https://www.nakavcichhorach.cz/info/tydenni/"
         url = "https://www.nakavcichhorach.cz/info/menu/#tydenni"
         soup = BeautifulSoup(self.loadPage(url), "html.parser")
         menu_items = []
@@ -58,20 +59,20 @@ class Bistro():
 
         soup.strip()
         soup = re.sub(r'A ((,| )?\d(,| )?)*$', '', soup).strip()
-        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', soup, value))
+        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', soup, value, "Polévka"))
 
 
         ## FOODS
         item = menuDaySelection[2].text.split('\n')
         food = item[0].split('/')[1].strip()
         food = re.sub(r'A ((,| )?\d(,| )?)*$', '', food).strip()
-        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', food, item[1]))
+        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', food, item[1], "menu"))
         
         for index in [4, 6]:
             item = menuDaySelection[index].text.split('\n')
             food = item[1].split('/')[1].strip()
             food = re.sub(r'A ((,| )?\d(,| )?)*$', '', food).strip()
-            menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', food, item[2]))
+            menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', food, item[2], "menu"))
 
         # rawFood = dmenuRaw.contents[5]
         # for i in range(0, len(rawFood.contents)):
@@ -93,5 +94,5 @@ class Bistro():
 
         return mystr
     
-bis = Bistro()
-bis.loadMenuItems()
+#bis = Bistro()
+#bis.loadMenuItems()

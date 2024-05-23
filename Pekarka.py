@@ -29,9 +29,16 @@ class Pekarka():
             popis_text = popis_elem.text.strip()
             popis_text = ''.join([i for i in popis_text if not i.isdigit() and i != ','])
             
-            item = FoodItem.FoodItem("Pekařka", popis_text, cena_elem.text.strip())
+            item = FoodItem.FoodItem("Pekařka", popis_text, cena_elem.text.strip(), "menu")
             menu_items.append(item)
         return menu_items
+
+        # Print the menu items
+        #for item in menu_items:
+        #    print(f"Cislo: {item['cislo']}")
+        #    print(f"Popis: {item['popis']}")
+        #    print(f"Cena: {item['cena']}")
+        #    print()
 
     def loadPage(self, url):
         fp = urllib.request.urlopen(url)
