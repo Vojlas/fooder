@@ -111,6 +111,12 @@ def update_cache():
         return 'Cache updated', 200
     else:
         return 'Unauthorized', 403
+    
+@app.route('/publish')
+def publish():
+    t = BackgroundTasks()
+    t.fetch_and_cache_menu_items()
+    return "Published"
 
 if (__name__ == "__main__"):
     # Create the parser
