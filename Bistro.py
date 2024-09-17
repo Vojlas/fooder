@@ -64,9 +64,9 @@ class Bistro():
 
         ## FOODS
         item = menuDaySelection[2].text.split('\n')
-        food = item[0].split('/')[1].strip()
+        food = item[1] #.split('/')[1].strip()
         food = re.sub(r'A ((,| )?\d(,| )?)*$', '', food).strip()
-        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', food, item[1], "menu"))
+        menu_items.append(FoodItem.FoodItem('Bistro Kavčí hory', food, item[2], "menu"))
         
         for index in [4, 6]:
             item = menuDaySelection[index].text.split('\n')
